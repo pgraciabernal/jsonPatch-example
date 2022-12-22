@@ -16,4 +16,5 @@ public class PaymentServiceProvider {
     private int priority;
     private int weight;
     private List<ProviderRule> providerRules;
+    private List<PaymentMethod> paymentMethods;
 }

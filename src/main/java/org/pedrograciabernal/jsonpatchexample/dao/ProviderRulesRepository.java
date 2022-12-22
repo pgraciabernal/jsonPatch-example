@@ -25,7 +25,7 @@ public class ProviderRulesRepository {
         return findOne(providerRule.getProviderRulesId());
     }
 
-    public List<ProviderRule> getPSP() {
+    public List<ProviderRule> getProviderRules() {
         return providerRules;
     }
 

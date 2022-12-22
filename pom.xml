@@ -8,11 +8,11 @@
         <version>2.4.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>be.omlip</groupId>
-    <artifactId>json-patch-example</artifactId>
+    <groupId>pedrograciabernal.org</groupId>
+    <artifactId>jsonPatch-example</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>json-patch-example</name>
-    <description>Demo project for JSON Patch usage (example)</description>
+    <name>jsonPatch-example</name>
+    <description>Demo project for JSON Patch</description>
 
     <properties>
         <java.version>11</java.version>
@@ -47,25 +47,21 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
-
-        <!-- JSR-353 (JSON Processing): API -->
         <dependency>
             <groupId>javax.json</groupId>
             <artifactId>javax.json-api</artifactId>
         </dependency>
-        <!-- JSR-353 (JSON Processing): Apache Johnzon implementation -->
+
         <dependency>
             <groupId>org.apache.johnzon</groupId>
             <artifactId>johnzon-core</artifactId>
         </dependency>
-        <!-- Jackson module for the JSR-353 (JSON Processing) -->
+
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr353</artifactId>
         </dependency>
 
-        <!-- To make PATCH call with TestRestTemplate see below -->
-        <!-- https://github.com/spring-projects/spring-framework/issues/19618 -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>

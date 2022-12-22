@@ -1,8 +1,6 @@
 package org.pedrograciabernal.jsonpatchexample;
 
-import org.pedrograciabernal.jsonpatchexample.model.OperatingSystem;
-import org.pedrograciabernal.jsonpatchexample.model.PaymentServiceProvider;
-import org.pedrograciabernal.jsonpatchexample.model.ProviderRule;
+import org.pedrograciabernal.jsonpatchexample.model.*;
 import org.pedrograciabernal.jsonpatchexample.web.JsonPatchMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr353.JSR353Module;
@@ -36,6 +34,21 @@ public class JsonPatchExampleApplication {
 
     @Bean
     public JsonPatchMapper<OperatingSystem> osJsonPatchMapper(ObjectMapper mapper) {
+        return new JsonPatchMapper<>(mapper);
+    }
+
+    @Bean
+    public JsonPatchMapper<PaymentMethod> pmJsonPatchMapper(ObjectMapper mapper) {
+        return new JsonPatchMapper<>(mapper);
+    }
+
+    @Bean
+    public JsonPatchMapper<PaymentMethodRule> pmrJsonPatchMapper(ObjectMapper mapper) {
+        return new JsonPatchMapper<>(mapper);
+    }
+
+    @Bean
+    public JsonPatchMapper<PaymentMethodSubtype> pmsJsonPatchMapper(ObjectMapper mapper) {
         return new JsonPatchMapper<>(mapper);
     }
 }
