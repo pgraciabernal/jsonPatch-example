@@ -79,53 +79,10 @@ public class JsonPatchService implements JsonPatchInterface {
             String [] splitPatch = lastItem.split("/");
 
             JsonPatchBuilder jsonPatchBuilder = Json.createPatchBuilder();
-            if (v instanceof String) {
-                jsonPatch = jsonPatchBuilder.replace("/"
-                        .concat((splitPatch.length == 1)? splitPatch[0] : splitPatch[2]), v.toString()).build();
-            } else if (v instanceof Integer) {
-                jsonPatch = jsonPatchBuilder.replace("/"
-                        .concat((splitPatch.length == 1)? splitPatch[0] : splitPatch[2]), v.toString()).build();
-            } else if (v instanceof Boolean) {
-                jsonPatch = jsonPatchBuilder.replace("/"
-                        .concat((splitPatch.length == 1)? splitPatch[0] : splitPatch[2]), v.toString()).build();
-            }
+            jsonPatch = jsonPatchBuilder.replace("/"
+                .concat((splitPatch.length == 1)? splitPatch[0] : splitPatch[2]), v.toString()).build();
 
-            PaymentServiceProvider paymentServiceProvider = paymentServiceProviderRepository.findOne(id);
-
-            if (splitPatch.length == 1) {
-                paymentServiceProvider = updatePSP(id, jsonPatch);
-            } else if (splitPatch[0].equalsIgnoreCase("providerRules")) {
-                ProviderRule providerRule = updateProviderRule(Integer.valueOf(splitPatch[1]), jsonPatch);
-                paymentServiceProvider.setProviderRules(providerRulesRepository.getProviderRules());
-            } else if (splitPatch[0].equalsIgnoreCase("operatingSystems")) {
-                OperatingSystem operatingSystem = updateOperatingSystem(Integer.valueOf(splitPatch[1]), jsonPatch);
-                List<ProviderRule> providerRules = paymentServiceProvider.getProviderRules();
-                ProviderRule providerRule = providerRules.get(0);
-                providerRule.setOperatingSystems(operatingSystemRepository.getOs());
-                providerRulesRepository.save(providerRule);
-                paymentServiceProvider.setProviderRules(providerRulesRepository.getProviderRules());
-            } else if (splitPatch[0].equalsIgnoreCase("paymentMethods")) {
-                PaymentMethod paymentMethod = updatePaymentMethod(Integer.valueOf(splitPatch[1]), jsonPatch);
-                paymentServiceProvider.setPaymentMethods(paymentMethodRepository.getPaymentMethods());
-            } else if (splitPatch[0].equalsIgnoreCase("paymentMethodRules")) {
-                PaymentMethodRule paymentMethodRule = updatePaymentMethodRule(Integer.valueOf(splitPatch[1]), jsonPatch);
-                List<PaymentMethod> paymentMethods = paymentServiceProvider.getPaymentMethods();
-                PaymentMethod paymentMethod = paymentMethods.get(0);
-                paymentMethod.setPaymentMethodRules(paymentMethodRuleRepository.getPaymentMethodRules());
-                paymentMethodRepository.save(paymentMethod);
-                paymentServiceProvider.setPaymentMethods(paymentMethodRepository.getPaymentMethods());
-            } else if (splitPatch[0].equalsIgnoreCase("subtypes")) {
-                PaymentMethodSubtype paymentMethodSubtype =
-                        updatePaymentMethodSybtype(Integer.valueOf(splitPatch[1]), jsonPatch);
-                List<PaymentMethod> paymentMethods = paymentServiceProvider.getPaymentMethods();
-                PaymentMethod paymentMethod = paymentMethods.get(0);
-                paymentMethod.setSubtypes(paymentMethodSubtypeRepository.getPaymentMethodSubtype());
-                paymentMethodRepository.save(paymentMethod);
-                paymentServiceProvider.setPaymentMethods(paymentMethodRepository.getPaymentMethods());
-            }
-
-            paymentServiceProviderRepository.save(paymentServiceProvider);
-
+            udpateItem(id, splitPatch);
         });
 
         return ResponseEntity.noContent().build();
@@ -134,6 +91,45 @@ public class JsonPatchService implements JsonPatchInterface {
     @Override
     public PaymentServiceProvider getPaymentServiceProvider(Integer id) {
         return paymentServiceProviderRepository.findOne(id);
+    }
+
+    private void udpateItem(Integer id, String[] splitPatch) {
+        PaymentServiceProvider paymentServiceProvider = getPaymentServiceProvider(id);
+
+        if (splitPatch.length == 1) {
+            // This is for root element
+            paymentServiceProvider = updatePSP(id, jsonPatch);
+        } else if (splitPatch[0].equalsIgnoreCase("providerRules")) {
+            ProviderRule providerRule = updateProviderRule(Integer.valueOf(splitPatch[1]), jsonPatch);
+            paymentServiceProvider.setProviderRules(providerRulesRepository.getProviderRules());
+        } else if (splitPatch[0].equalsIgnoreCase("operatingSystems")) {
+            OperatingSystem operatingSystem = updateOperatingSystem(Integer.valueOf(splitPatch[1]), jsonPatch);
+            List<ProviderRule> providerRules = paymentServiceProvider.getProviderRules();
+            ProviderRule providerRule = providerRules.get(0);
+            providerRule.setOperatingSystems(operatingSystemRepository.getOs());
+            providerRulesRepository.save(providerRule);
+            paymentServiceProvider.setProviderRules(providerRulesRepository.getProviderRules());
+        } else if (splitPatch[0].equalsIgnoreCase("paymentMethods")) {
+            PaymentMethod paymentMethod = updatePaymentMethod(Integer.valueOf(splitPatch[1]), jsonPatch);
+            paymentServiceProvider.setPaymentMethods(paymentMethodRepository.getPaymentMethods());
+        } else if (splitPatch[0].equalsIgnoreCase("paymentMethodRules")) {
+            PaymentMethodRule paymentMethodRule = updatePaymentMethodRule(Integer.valueOf(splitPatch[1]), jsonPatch);
+            List<PaymentMethod> paymentMethods = paymentServiceProvider.getPaymentMethods();
+            PaymentMethod paymentMethod = paymentMethods.get(0);
+            paymentMethod.setPaymentMethodRules(paymentMethodRuleRepository.getPaymentMethodRules());
+            paymentMethodRepository.save(paymentMethod);
+            paymentServiceProvider.setPaymentMethods(paymentMethodRepository.getPaymentMethods());
+        } else if (splitPatch[0].equalsIgnoreCase("subtypes")) {
+            PaymentMethodSubtype paymentMethodSubtype =
+                    updatePaymentMethodSybtype(Integer.valueOf(splitPatch[1]), jsonPatch);
+            List<PaymentMethod> paymentMethods = paymentServiceProvider.getPaymentMethods();
+            PaymentMethod paymentMethod = paymentMethods.get(0);
+            paymentMethod.setSubtypes(paymentMethodSubtypeRepository.getPaymentMethodSubtype());
+            paymentMethodRepository.save(paymentMethod);
+            paymentServiceProvider.setPaymentMethods(paymentMethodRepository.getPaymentMethods());
+        }
+
+        paymentServiceProviderRepository.save(paymentServiceProvider);
     }
 
     private PaymentServiceProvider updatePSP(Integer id, JsonPatch patchDocument) {
